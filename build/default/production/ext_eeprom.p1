@@ -1,0 +1,229 @@
+Version 4.0 HI-TECH Software Intermediate Code
+"16 ext_eeprom.c
+[; ;ext_eeprom.c: 16: extern unsigned char *event[8],log_count;
+[v _log_count `uc ~T0 @X0 0 e ]
+"25 ./ext_eeprom.h
+[; ;./ext_eeprom.h: 25: unsigned char read_external_eeprom(unsigned char address1);
+[v _read_external_eeprom `(uc ~T0 @X0 0 ef1`uc ]
+"24
+[; ;./ext_eeprom.h: 24: void write_external_eeprom(unsigned char address1, unsigned char data);
+[v _write_external_eeprom `(v ~T0 @X0 0 ef2`uc`uc ]
+"12 ext_eeprom.c
+[; ;ext_eeprom.c: 12: extern char time[9];
+[v _time `uc ~T0 @X0 -> 0 `x e ]
+"15
+[; ;ext_eeprom.c: 15: extern char event_index;
+[v _event_index `uc ~T0 @X0 0 e ]
+"6 ./i2c.h
+[; ;./i2c.h: 6: void i2c_start(void);
+[v _i2c_start `(v ~T0 @X0 0 ef ]
+"9
+[; ;./i2c.h: 9: void i2c_write(unsigned char data);
+[v _i2c_write `(v ~T0 @X0 0 ef1`uc ]
+"8
+[; ;./i2c.h: 8: void i2c_stop(void);
+[v _i2c_stop `(v ~T0 @X0 0 ef ]
+"7
+[; ;./i2c.h: 7: void i2c_rep_start(void);
+[v _i2c_rep_start `(v ~T0 @X0 0 ef ]
+"10
+[; ;./i2c.h: 10: unsigned char i2c_read(void);
+[v _i2c_read `(uc ~T0 @X0 0 ef ]
+"13 ext_eeprom.c
+[; ;ext_eeprom.c: 13: unsigned char event_num=0;
+[v _event_num `uc ~T0 @X0 1 e ]
+[i _event_num
+-> -> 0 `i `uc
+]
+"14
+[; ;ext_eeprom.c: 14: unsigned int address=0;
+[v _address `ui ~T0 @X0 1 e ]
+[i _address
+-> -> 0 `i `ui
+]
+"18
+[; ;ext_eeprom.c: 18: void store_eeprom( unsigned char key, unsigned long adc_val )
+[v _store_eeprom `(v ~T0 @X0 1 ef2`uc`ul ]
+"19
+[; ;ext_eeprom.c: 19: {
+{
+[e :U _store_eeprom ]
+"18
+[; ;ext_eeprom.c: 18: void store_eeprom( unsigned char key, unsigned long adc_val )
+[v _key `uc ~T0 @X0 1 r1 ]
+[v _adc_val `ul ~T0 @X0 1 r2 ]
+"19
+[; ;ext_eeprom.c: 19: {
+[f ]
+"21
+[; ;ext_eeprom.c: 21:     if( key == 1 || key == 2 || key == 3 )
+[e $ ! || || == -> _key `i -> 1 `i == -> _key `i -> 2 `i == -> _key `i -> 3 `i 2  ]
+"22
+[; ;ext_eeprom.c: 22:     {
+{
+"24
+[; ;ext_eeprom.c: 24:         log_count = read_external_eeprom(0x33);
+[e = _log_count ( _read_external_eeprom (1 -> -> 51 `i `uc ]
+"26
+[; ;ext_eeprom.c: 26:       if(log_count < 10)
+[e $ ! < -> _log_count `i -> 10 `i 3  ]
+"27
+[; ;ext_eeprom.c: 27:       {
+{
+"28
+[; ;ext_eeprom.c: 28:           log_count++;
+[e ++ _log_count -> -> 1 `i `uc ]
+"29
+[; ;ext_eeprom.c: 29:           write_external_eeprom(0x33,log_count);
+[e ( _write_external_eeprom (2 , -> -> 51 `i `uc _log_count ]
+"30
+[; ;ext_eeprom.c: 30:       }
+}
+[e :U 3 ]
+"31
+[; ;ext_eeprom.c: 31:  if( event_num == 10 )
+[e $ ! == -> _event_num `i -> 10 `i 4  ]
+"32
+[; ;ext_eeprom.c: 32:  {
+{
+"33
+[; ;ext_eeprom.c: 33:         event_num = 0;
+[e = _event_num -> -> 0 `i `uc ]
+"34
+[; ;ext_eeprom.c: 34:      address = 0;
+[e = _address -> -> 0 `i `ui ]
+"35
+[; ;ext_eeprom.c: 35:  }
+}
+[e :U 4 ]
+"36
+[; ;ext_eeprom.c: 36:  for( int i = 0; i < 8 ; i++ )
+{
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> 8 `i 5  ]
+[e $U 6  ]
+[e :U 5 ]
+"37
+[; ;ext_eeprom.c: 37:  {
+{
+"38
+[; ;ext_eeprom.c: 38:         if(i == 0 || i == 3 || i == 6)
+[e $ ! || || == _i -> 0 `i == _i -> 3 `i == _i -> 6 `i 8  ]
+"39
+[; ;ext_eeprom.c: 39:      write_external_eeprom(address++,(((time[i]-48)*10))+(time[i+1]-48));
+[e ( _write_external_eeprom (2 , -> ++ _address -> -> 1 `i `ui `uc -> + * - -> *U + &U _time * -> -> _i `ui `ux -> -> # *U &U _time `ui `ux `i -> 48 `i -> 10 `i - -> *U + &U _time * -> -> + _i -> 1 `i `ui `ux -> -> # *U &U _time `ui `ux `i -> 48 `i `uc ]
+[e :U 8 ]
+"40
+[; ;ext_eeprom.c: 40:  }
+}
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 8 `i 5  ]
+[e :U 6 ]
+}
+"42
+[; ;ext_eeprom.c: 42:   write_external_eeprom(address++,event_index);
+[e ( _write_external_eeprom (2 , -> ++ _address -> -> 1 `i `ui `uc -> _event_index `uc ]
+"44
+[; ;ext_eeprom.c: 44:  write_external_eeprom( address++, adc_val);
+[e ( _write_external_eeprom (2 , -> ++ _address -> -> 1 `i `ui `uc -> _adc_val `uc ]
+"45
+[; ;ext_eeprom.c: 45:  event_num++;
+[e ++ _event_num -> -> 1 `i `uc ]
+"46
+[; ;ext_eeprom.c: 46:     }
+}
+[e :U 2 ]
+"48
+[; ;ext_eeprom.c: 48: }
+[e :UE 1 ]
+}
+"49
+[; ;ext_eeprom.c: 49: void write_external_eeprom(unsigned char address, unsigned char data)
+[v _write_external_eeprom `(v ~T0 @X0 1 ef2`uc`uc ]
+"50
+[; ;ext_eeprom.c: 50: {
+{
+[e :U _write_external_eeprom ]
+"49
+[; ;ext_eeprom.c: 49: void write_external_eeprom(unsigned char address, unsigned char data)
+[v _address `uc ~T0 @X0 1 r1 ]
+[v _data `uc ~T0 @X0 1 r2 ]
+"50
+[; ;ext_eeprom.c: 50: {
+[f ]
+"51
+[; ;ext_eeprom.c: 51:  i2c_start();
+[e ( _i2c_start ..  ]
+"52
+[; ;ext_eeprom.c: 52:  i2c_write(0xA0);
+[e ( _i2c_write (1 -> -> 160 `i `uc ]
+"53
+[; ;ext_eeprom.c: 53:  i2c_write(address);
+[e ( _i2c_write (1 _address ]
+"54
+[; ;ext_eeprom.c: 54:  i2c_write(data);
+[e ( _i2c_write (1 _data ]
+"55
+[; ;ext_eeprom.c: 55:  i2c_stop();
+[e ( _i2c_stop ..  ]
+"56
+[; ;ext_eeprom.c: 56:  for(unsigned int i = 3000;i--;);
+{
+[v _i `ui ~T0 @X0 1 a ]
+[e = _i -> -> 3000 `i `ui ]
+[e $U 13  ]
+[e :U 10 ]
+[e :U 13 ]
+[e $ != -- _i -> -> 1 `i `ui -> -> 0 `i `ui 10  ]
+[e :U 11 ]
+}
+"57
+[; ;ext_eeprom.c: 57: }
+[e :UE 9 ]
+}
+"59
+[; ;ext_eeprom.c: 59: unsigned char read_external_eeprom(unsigned char address)
+[v _read_external_eeprom `(uc ~T0 @X0 1 ef1`uc ]
+"60
+[; ;ext_eeprom.c: 60: {
+{
+[e :U _read_external_eeprom ]
+"59
+[; ;ext_eeprom.c: 59: unsigned char read_external_eeprom(unsigned char address)
+[v _address `uc ~T0 @X0 1 r1 ]
+"60
+[; ;ext_eeprom.c: 60: {
+[f ]
+"61
+[; ;ext_eeprom.c: 61:  unsigned char data;
+[v _data `uc ~T0 @X0 1 a ]
+"63
+[; ;ext_eeprom.c: 63:  i2c_start();
+[e ( _i2c_start ..  ]
+"64
+[; ;ext_eeprom.c: 64:  i2c_write(0xA0);
+[e ( _i2c_write (1 -> -> 160 `i `uc ]
+"65
+[; ;ext_eeprom.c: 65:  i2c_write(address);
+[e ( _i2c_write (1 _address ]
+"66
+[; ;ext_eeprom.c: 66:  i2c_rep_start();
+[e ( _i2c_rep_start ..  ]
+"67
+[; ;ext_eeprom.c: 67:  i2c_write(0xA1);
+[e ( _i2c_write (1 -> -> 161 `i `uc ]
+"68
+[; ;ext_eeprom.c: 68:  data = i2c_read();
+[e = _data ( _i2c_read ..  ]
+"69
+[; ;ext_eeprom.c: 69:  i2c_stop();
+[e ( _i2c_stop ..  ]
+"71
+[; ;ext_eeprom.c: 71:  return data;
+[e ) _data ]
+[e $UE 14  ]
+"72
+[; ;ext_eeprom.c: 72: }
+[e :UE 14 ]
+}
